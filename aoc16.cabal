@@ -25,7 +25,9 @@ library
                      , cryptohash
                      , bytestring
                      , base16-bytestring
+                     , megaparsec
   default-language:    Haskell2010
+  ghc-options: -fwarn-unused-imports -fwarn-unused-binds -fwarn-name-shadowing -fwarn-unused-matches -fwarn-incomplete-patterns -fwarn-incomplete-uni-patterns -threaded -rtsopts -with-rtsopts=-N
 
 source-repository head
   type:     git
