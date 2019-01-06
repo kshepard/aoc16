@@ -26,9 +26,15 @@ emptyDisplay = Display $ const False
 
 instrParser :: Parser Instr
 instrParser =
-      Rect <$> (string "rect " *> decimal) <*> (char 'x' *> decimal)
-  <|> RotateCol <$> (string "rotate column x=" *> decimal) <*> (string " by " *> decimal)
-  <|> RotateRow <$> (string "rotate row y=" *> decimal) <*> (string " by " *> decimal)
+  Rect
+    <$> (string "rect " *> decimal)
+    <*> (char 'x' *> decimal)
+    <|> RotateCol
+    <$> (string "rotate column x=" *> decimal)
+    <*> (string " by " *> decimal)
+    <|> RotateRow
+    <$> (string "rotate row y=" *> decimal)
+    <*> (string " by " *> decimal)
 
 parseLines :: Parser a -> String -> IO [a]
 parseLines parser path = do
@@ -38,11 +44,10 @@ parseLines parser path = do
     Right x   -> return x
 
 printDisplay :: Display Bool -> IO ()
-printDisplay (Display display) =
-  for_ [0 .. rows - 1] $ \row -> do
-    for_ [0 .. cols - 1] $ \col ->
-      putStr $ if display (row, col) then "*" else " "
-    print ""
+printDisplay (Display display) = for_ [0 .. rows - 1] $ \row -> do
+  for_ [0 .. cols - 1]
+    $ \col -> putStr $ if display (row, col) then "*" else " "
+  print ""
 
 wrap :: Int -> Int -> Int
 wrap val maxVal =
@@ -50,8 +55,7 @@ wrap val maxVal =
 
 updateDisplay :: Display Bool -> Instr -> Display Bool
 updateDisplay (Display display) = \case
-  Rect      w h -> Display $ \(r, c) ->
-    (c < w && r < h) || display (r, c)
+  Rect      w h -> Display $ \(r, c) -> (c < w && r < h) || display (r, c)
   RotateCol c n -> Display $ \(r, c') ->
     if c == c' then display (wrap (r - n) rows, c') else display (r, c')
   RotateRow r n -> Display $ \(r', c) ->
@@ -61,5 +65,9 @@ main :: IO ()
 main = do
   instrs <- parseLines instrParser "input/08.txt"
   let finalDisplay@(Display display) = foldl' updateDisplay emptyDisplay instrs
-  print . sum $ fromEnum . display <$> ((,) <$> [0 .. rows - 1] <*> [0 .. cols - 1])
+  print
+    .   sum
+    $   fromEnum
+    .   display
+    <$> ((,) <$> [0 .. rows - 1] <*> [0 .. cols - 1])
   printDisplay finalDisplay

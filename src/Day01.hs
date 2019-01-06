@@ -1,8 +1,8 @@
 module Day01 where
 
-import Control.Monad.Trans
-import Data.List           (foldl')
-import Data.List.Split     (splitOn)
+import           Control.Monad.Trans
+import           Data.List                      ( foldl' )
+import           Data.List.Split                ( splitOn )
 
 data Dir   = N | S | E | W
 data Turn  = R | L
@@ -12,12 +12,12 @@ data State = State Coord Dir [Coord]
 
 parseInstr :: String -> Instr
 parseInstr s = Instr d a
-  where
-    a = read . tail $ s :: Int
-    d = case head s of
-      'R' -> R
-      'L' -> L
-      _   -> error $ "Invalid instr: " ++ s
+ where
+  a = read . tail $ s :: Int
+  d = case head s of
+    'R' -> R
+    'L' -> L
+    _   -> error $ "Invalid instr: " ++ s
 
 parseInput :: MonadIO m => String -> m ([Instr])
 parseInput f = do
@@ -45,22 +45,21 @@ manhattan (Coord x y) = abs x + abs y
 
 step :: State -> Instr -> State
 step (State c d cs) (Instr t i) = State c' d' cs'
-  where
-    d'  = rotate d t
-    c'  = nextCoord c d' i
-    cs' = cs ++ (map (\x -> nextCoord c d' x) [1..i])
+ where
+  d'  = rotate d t
+  c'  = nextCoord c d' i
+  cs' = cs ++ (map (\x -> nextCoord c d' x) [1 .. i])
 
 firstDup :: [Coord] -> Maybe Int
 firstDup cs = go 1
-  where
-    go i
-      | i >= length cs = Nothing
-      | found          = Just $ manhattan c
-      | otherwise      = go $ i + 1
-      where
-        c     = cs !! i
-        cs'   = take i cs
-        found = elem c cs'
+ where
+  go i | i >= length cs = Nothing
+       | found          = Just $ manhattan c
+       | otherwise      = go $ i + 1
+   where
+    c     = cs !! i
+    cs'   = take i cs
+    found = elem c cs'
 
 solve :: MonadIO m => [Instr] -> m ()
 solve instrs = do

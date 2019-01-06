@@ -1,7 +1,7 @@
 module Day02 where
 
-import Control.Monad.Trans
-import Data.List           (foldl')
+import           Control.Monad.Trans
+import           Data.List                      ( foldl' )
 
 data Dir   = U | D | L | R deriving Show
 type Instr = [Dir]
@@ -38,7 +38,7 @@ nextA '8' R = '9'
 nextA '8' L = '7'
 nextA '9' U = '6'
 nextA '9' L = '8'
-nextA c _ = c
+nextA c   _ = c
 
 nextB :: Char -> Dir -> Char
 nextB '1' D = '3'
@@ -73,19 +73,21 @@ nextB 'B' L = 'A'
 nextB 'C' U = '8'
 nextB 'C' L = 'B'
 nextB 'D' U = 'B'
-nextB c _ = c
+nextB c   _ = c
 
 runInstrA :: Char -> Instr -> Char
 runInstrA c i = foldl' (\acc d -> nextA acc d) c i
 
 runInstrAs :: [Instr] -> [Char]
-runInstrAs is = drop 1 $ foldl' (\acc i -> acc ++ [runInstrA (last acc) i]) ['5'] is
+runInstrAs is =
+  drop 1 $ foldl' (\acc i -> acc ++ [runInstrA (last acc) i]) ['5'] is
 
 runInstrB :: Char -> Instr -> Char
 runInstrB c i = foldl' (\acc d -> nextB acc d) c i
 
 runInstrBs :: [Instr] -> [Char]
-runInstrBs is = drop 1 $ foldl' (\acc i -> acc ++ [runInstrB (last acc) i]) ['5'] is
+runInstrBs is =
+  drop 1 $ foldl' (\acc i -> acc ++ [runInstrB (last acc) i]) ['5'] is
 
 parseInput :: MonadIO m => String -> m ([Instr])
 parseInput f = do

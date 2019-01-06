@@ -1,16 +1,18 @@
 module Day03 where
 
-import Control.Monad.Trans
-import Data.List.Split     (chunksOf, splitOn)
+import           Control.Monad.Trans
+import           Data.List.Split                ( chunksOf
+                                                , splitOn
+                                                )
 
 data Triangle = Triangle Int Int Int
 
 parseInput :: MonadIO m => String -> m ([Triangle])
 parseInput f = do
   input <- liftIO . readFile $ f
-  return
-    $ map (\t -> Triangle (t !! 0) (t !! 1) (t !! 2))
-    $ chunksOf 3 [read x :: Int | x <- concatMap (splitOn " ") (lines input), x /= ""]
+  return $ map (\t -> Triangle (t !! 0) (t !! 1) (t !! 2)) $ chunksOf
+    3
+    [ read x :: Int | x <- concatMap (splitOn " ") (lines input), x /= "" ]
 
 valid :: Triangle -> Bool
 valid (Triangle a b c) = a + b > c && a + c > b && b + c > a
